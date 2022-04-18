@@ -1,5 +1,5 @@
 from email.policy import default
-from turtle import title
+# from turtle import title
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -38,6 +38,22 @@ class Post(db.Model):
 
         return self.created_at.strftime("%a %b %-d  %Y, %-I:%M %p")
         # %a is abbreviated day, %b is abbreviated month, %-d is day of month as decimal (1, 2, 3...), %Y is full 4 number year, %-I is hour number, %M is minute number with a 0 in front of it for the first number, %p is AM or PM
+
+class PostTag(db.Model):
+
+    __tablename__ = "post_tags"
+
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), primary_key=True)
+    tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'), primary_key=True)
+
+class Tag(db.Model):
+
+    __tablename__ = "tags"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text, nullable=False, unique=True)
+
+    posts = db.relationship('Post', secondary="posts_tags", backref="tags",)
 
 
 def connect_db(app):
